@@ -79,7 +79,6 @@ export default function Register() {
                   />
                 </div>
               </div>
-              <Button type="submit">Cadastrar</Button>
             </form>
           </CardContent>
           <CardFooter className="flex justify-between">
