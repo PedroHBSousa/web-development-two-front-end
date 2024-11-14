@@ -15,7 +15,6 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-gray-400">Termos de Uso</Link>
           </div>
 
-          {/* Ícones de redes sociais */}
           <div className="flex space-x-6">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
               <FaFacebook className="text-2xl hover:text-blue-500" />
@@ -32,7 +31,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Texto de copyright */}
         <div className="text-center text-sm">
           <p>&copy; 2024 MeuSite. Todos os direitos reservados.</p>
         </div>

@@ -3,11 +3,19 @@ import NavBar from "@/components/ui/NavBar";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col min-h-screen">
       <NavBar />
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="flex flex-grow">
-          <p>oi</p>
+      <main className="flex-1 w-full">
+        {/* Banner com imagem de fundo */}
+        <div
+          className="w-full h-[300px] sm:h-[400px] bg-cover bg-center mt-[80px]"
+          style={{
+            backgroundImage: "url('https://getbranded.com/cdn/shop/collections/Generic_659d0ad2-1977-40e9-8691-35dd072cf0db.jpg?v=1671198217')"
+          }}
+        >
+          <div className="flex items-center justify-center">
+            <p>Conteudo massa</p>
+          </div>
         </div>
       </main>
       <Footer />
