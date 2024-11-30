@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import NavBar from "@/components/ui/NavBar";
+import Footer from "@/components/ui/Footer";
 
 export default function Register() {
   const validationSchema = Yup.object({
@@ -51,6 +53,7 @@ export default function Register() {
   const router = useRouter();
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <NavBar/>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <form onSubmit={formik.handleSubmit}>
           <Card className="w-[350px]">
@@ -141,6 +144,7 @@ export default function Register() {
           </Card>
         </form>
       </main>
+      <Footer/>
     </div>
   );
 }

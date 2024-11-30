@@ -15,6 +15,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import NavBar from "@/components/ui/NavBar";
+import Footer from "@/components/ui/Footer";
 
 export default function Login() {
   const validationSchema = Yup.object({
@@ -44,6 +46,7 @@ export default function Login() {
 
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <NavBar/>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Card className="w-[350px]">
           <CardHeader>
@@ -101,6 +104,7 @@ export default function Login() {
         </Card>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
+      <Footer/>
     </div>
   );
 }
