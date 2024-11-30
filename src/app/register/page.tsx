@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,42 +19,62 @@ import { useFormik } from "formik";
 export default function Register() {
   const validationSchema = Yup.object({
     email: Yup.string().email("Email inválido").required("Campo obrigatório"),
-    name: Yup.string().required("Campo obrigatório"),
+    full_name: Yup.string().required("Campo obrigatório"),
     password: Yup.string().required("Campo obrigatório"),
+    passwordConfirmation: Yup.string()
+      .required("Campo obrigatório")
+      .oneOf([Yup.ref("password")], "As senhas devem ser iguais"),
   });
 
   const formik = useFormik({
     initialValues: {
       email: "",
-      name: "",
+      full_name: "",
       password: "",
+      passwordConfirmation: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const response = await api.post("/user", values);
+        if (response.status === 200 || response.status === 201) {
+          console.log("Registration successful!");
+        } else {
+          console.error("Registration failed:", response.data);
+        }
+      } catch (error) {
+        console.error("Error during registration:", error);
+      }
     },
   });
 
   const router = useRouter();
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Card className="w-[350px]">
-          <CardHeader>
-            <CardTitle>Cadastro</CardTitle>
-            <CardDescription>Crie sua conta em poucos passos.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
+          <Card className="w-[350px]">
+            <CardHeader>
+              <CardTitle>Cadastro</CardTitle>
+              <CardDescription>
+                Crie sua conta em poucos passos.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">Nome</Label>
+                  <Label htmlFor="full_name">Nome</Label>
                   <Input
-                    id="name"
+                    id="full_name"
                     placeholder="Digite seu nome"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.name}
+                    value={formik.values.full_name}
+                    error={
+                      formik.touched.full_name && formik.errors.full_name
+                        ? formik.errors.full_name
+                        : undefined
+                    }
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -65,6 +86,11 @@ export default function Register() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
+                    error={
+                      formik.touched.email && formik.errors.email
+                        ? formik.errors.email
+                        : undefined
+                    }
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -76,18 +102,44 @@ export default function Register() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.password}
+                    error={
+                      formik.touched.password && formik.errors.password
+                        ? formik.errors.password
+                        : undefined
+                    }
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="password">Confirmar senha</Label>
+                  <Input
+                    id="passwordConfirmation"
+                    type="password"
+                    placeholder="Digite sua senha"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.passwordConfirmation}
+                    error={
+                      formik.touched.passwordConfirmation &&
+                      formik.errors.passwordConfirmation
+                        ? formik.errors.passwordConfirmation
+                        : undefined
+                    }
                   />
                 </div>
               </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => router.back()}>
-              Voltar
-            </Button>
-            <Button type="submit">Cadastrar</Button>
-          </CardFooter>
-        </Card>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => router.back()}
+              >
+                Voltar
+              </Button>
+              <Button type="submit">Cadastrar</Button>
+            </CardFooter>
+          </Card>
+        </form>
       </main>
     </div>
   );

@@ -23,7 +23,7 @@ export default function ProductCard() {
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle className="text-xl font-bold mb-2">PC Gamer</CardTitle>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="inter text-sm text-gray-600 mb-4">
           Este é um produto fantástico que vai revolucionar sua vida. Com
           características únicas e design inovador, é a escolha perfeita para
           você.

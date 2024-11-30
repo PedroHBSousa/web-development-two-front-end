@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import {
   Card,
@@ -16,18 +17,33 @@ import {
 } from "@/components/ui/card";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Email inválido").required("Campo obrigatório"),
+    password: Yup.string().required("Campo obrigatório"),
+  });
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Here you would typically handle the login logic
-    console.log("Login submitted", { email, password, rememberMe });
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      const response = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+        callbackUrl: "/product/create",
+      });
+      if (response?.error) {
+        console.log(response);
+        return;
+      }
+    },
+  });
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Card className="w-[350px]">
           <CardHeader>
@@ -37,16 +53,21 @@ export default function Login() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={formik.handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="nome@exemplo.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                  error={
+                    formik.touched.email && formik.errors.email
+                      ? formik.errors.email
+                      : undefined
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -54,19 +75,16 @@ export default function Login() {
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
+                  error={
+                    formik.touched.password && formik.errors.password
+                      ? formik.errors.password
+                      : undefined
+                  }
                 />
               </div>
-              {/* <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="remember" 
-            checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-          />
-          <Label htmlFor="remember">Remember me</Label>
-        </div> */}
               <Button type="submit" className="w-full">
                 Entrar
               </Button>
