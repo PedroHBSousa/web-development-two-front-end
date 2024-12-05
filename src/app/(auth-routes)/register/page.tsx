@@ -21,7 +21,7 @@ import Footer from "@/components/ui/Footer";
 export default function Register() {
   const validationSchema = Yup.object({
     email: Yup.string().email("Email inválido").required("Campo obrigatório"),
-    full_name: Yup.string().required("Campo obrigatório"),
+    fullName: Yup.string().required("Campo obrigatório"),
     password: Yup.string().required("Campo obrigatório"),
     passwordConfirmation: Yup.string()
       .required("Campo obrigatório")
@@ -31,14 +31,16 @@ export default function Register() {
   const formik = useFormik({
     initialValues: {
       email: "",
-      full_name: "",
+      fullName: "",
       password: "",
       passwordConfirmation: "",
     },
     validationSchema,
     onSubmit: async (values) => {
+      const { passwordConfirmation, ...user } = values;
+
       try {
-        const response = await api.post("/user", values);
+        const response = await api.post("/users", user);
         if (response.status === 200 || response.status === 201) {
           console.log("Registration successful!");
         } else {
@@ -51,6 +53,7 @@ export default function Register() {
   });
 
   const router = useRouter();
+
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <NavBar/>
@@ -68,14 +71,14 @@ export default function Register() {
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="full_name">Nome</Label>
                   <Input
-                    id="full_name"
+                    id="fullName"
                     placeholder="Digite seu nome"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.full_name}
+                    value={formik.values.fullName}
                     error={
-                      formik.touched.full_name && formik.errors.full_name
-                        ? formik.errors.full_name
+                      formik.touched.fullName && formik.errors.fullName
+                        ? formik.errors.fullName
                         : undefined
                     }
                   />
