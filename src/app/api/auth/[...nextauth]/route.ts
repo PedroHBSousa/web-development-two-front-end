@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import api from "@/lib/api";
 
 const nextAuthOptions: NextAuthOptions = {
-  secret: 'process.env.NEXTAUTH_SECRET',
+  secret: "process.env.NEXTAUTH_SECRET",
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -36,7 +36,7 @@ const nextAuthOptions: NextAuthOptions = {
             throw new Error("Usuário não encontrado.");
           }
 
-          return { user, token }
+          return { user, token };
         } catch (error) {
           return null;
         }
@@ -49,19 +49,19 @@ const nextAuthOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.user = user.user;
-        token.accessToken = user.token;
+        token.user = user;
+        token.accessToken = user;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user;
-      session.token = token.accessToken;
+      session.user = token.user as any;
+      session.token = token.accessToken as any;
       return session;
     },
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
-    }
+    },
   },
 };
 
