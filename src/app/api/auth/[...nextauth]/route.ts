@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import api from "@/lib/api";
 
 const nextAuthOptions: NextAuthOptions = {
+  secret: 'process.env.NEXTAUTH_SECRET',
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -19,24 +20,24 @@ const nextAuthOptions: NextAuthOptions = {
             throw new Error("Credenciais inválidas.");
           }
 
-          const response = await api.post("/auth/login", {
+          const response = await api.post("/authenticate", {
             email: credentials.email,
             password: credentials.password,
           });
 
-          if (response.status !== 200) {
+          if (response.status !== 201) {
             throw new Error("Login falhou, credenciais incorretas.");
           }
 
-          const user = response.data;
+          const user = response.data.user;
+          const token = response.data.token;
 
           if (!user || !user.id) {
             throw new Error("Usuário não encontrado.");
           }
 
-          return user;
+          return { user, token }
         } catch (error) {
-          console.error("Erro na autorização:", error);
           return null;
         }
       },
@@ -46,17 +47,21 @@ const nextAuthOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      return baseUrl;
-    },
     async jwt({ token, user }) {
-      user && (token.user = user);
+      if (user) {
+        token.user = user.user;
+        token.accessToken = user.token;
+      }
       return token;
     },
     async session({ session, token }) {
-      session = token.user as any;
+      session.user = token.user;
+      session.token = token.accessToken;
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    }
   },
 };
 

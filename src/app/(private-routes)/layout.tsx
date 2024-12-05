@@ -13,5 +13,6 @@ export default async function PrivateLayout({ children }: PrivateLayoutProps) {
   if (!session) {
     redirect("/login");
   }
+
   return <>{children}</>;
 }

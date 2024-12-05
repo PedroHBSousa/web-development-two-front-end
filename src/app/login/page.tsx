@@ -15,6 +15,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "../api/auth/[...nextauth]/route";
 
 export default function Login() {
   const validationSchema = Yup.object({
@@ -33,12 +35,9 @@ export default function Login() {
         email: values.email,
         password: values.password,
         redirect: false,
-        callbackUrl: "/product/create",
       });
-      if (response?.error) {
-        console.log(response);
-        return;
-      }
+
+      window.location.href = "/product/create";
     },
   });
 
