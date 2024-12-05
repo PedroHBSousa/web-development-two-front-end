@@ -15,8 +15,6 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { getServerSession } from "next-auth";
-import { nextAuthOptions } from "../api/auth/[...nextauth]/route";
 
 export default function Login() {
   const validationSchema = Yup.object({

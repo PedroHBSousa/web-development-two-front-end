@@ -1,14 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useToast } from "@/hooks/use-toast";
+import api from "@/lib/api";
 
 export default function ProductRegistrationForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { toast } = useToast();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -21,11 +28,43 @@ export default function ProductRegistrationForm() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted");
-  };
+  const validationSchema = Yup.object({
+    title: Yup.string().required("Campo obrigatório"),
+    description: Yup.string().required("Campo obrigatório"),
+    price: Yup.number().required("Campo obrigatório").min(0),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      description: "",
+      price: 0,
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        setIsSubmitting(true);
+        const response = await api.post("/products", values);
+        if (response.status === 200 || response.status === 201) {
+          toast({
+            variant: "success",
+            title: "Produto cadastrado com sucesso!",
+          });
+        } else {
+          console.error("Product registration failed:", response.data);
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Falha ao cadastrar produto",
+          description: error.message,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  });
 
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -35,22 +74,38 @@ export default function ProductRegistrationForm() {
             <CardTitle>Cadastro de Produto</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={formik.handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="title">Título</Label>
                 <Input
                   id="title"
                   placeholder="Digite o título do produto"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.title}
+                  error={
+                    formik.touched.title && formik.errors.title
+                      ? formik.errors.title
+                      : undefined
+                  }
                   required
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">Descrição</Label>
-                <Textarea
+                <Input
                   id="description"
                   placeholder="Digite a descrição do produto"
                   required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.description}
+                  error={
+                    formik.touched.description && formik.errors.description
+                      ? formik.errors.description
+                      : undefined
+                  }
                 />
               </div>
 
@@ -83,11 +138,19 @@ export default function ProductRegistrationForm() {
                   min="0"
                   placeholder="Digite o preço do produto"
                   required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.price}
+                  error={
+                    formik.touched.price && formik.errors.price
+                      ? formik.errors.price
+                      : undefined
+                  }
                 />
               </div>
 
-              <Button type="submit" className="w-full">
-                Cadastrar Produto
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Enviando..." : "Cadastrar"}
               </Button>
             </form>
           </CardContent>

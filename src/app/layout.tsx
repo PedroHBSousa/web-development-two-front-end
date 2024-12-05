@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={inter.variable}>
         <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
+        <Toaster />
       </body>
     </html>
   );
