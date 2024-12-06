@@ -4,18 +4,21 @@ import { useState } from "react";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import { useSession } from "next-auth/react";
 
 export default function ProductRegistrationForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
+
+  const { data: session } = useSession();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -23,41 +26,81 @@ export default function ProductRegistrationForm() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
+        setSelectedImage(file);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const validationSchema = Yup.object({
-    title: Yup.string().required("Campo obrigatório"),
+    name: Yup.string().required("Campo obrigatório"),
     description: Yup.string().required("Campo obrigatório"),
     price: Yup.number().required("Campo obrigatório").min(0),
   });
 
   const formik = useFormik({
     initialValues: {
-      title: "",
+      name: "",
       description: "",
       price: 0,
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       try {
-        setIsSubmitting(true);
-        const response = await api.post("/products", values);
-        if (response.status === 200 || response.status === 201) {
+        // Etapa 1: Criar o Produto
+        const productResponse = await api.post("/products", values, {
+          headers: {
+            Authorization: `Bearer ${session?.token.token}`,
+          },
+        });
+
+        console.log(productResponse);
+
+        if (productResponse.status === 201 || productResponse.status === 200) {
+          const productId = productResponse.data.id;
+
           toast({
             variant: "success",
             title: "Produto cadastrado com sucesso!",
           });
+
+          console.log(selectedImage);
+
+          if (selectedImage) {
+            const formData = new FormData();
+            formData.append("file", selectedImage);
+
+            const imageResponse = await api.post(
+              `/products/${productId}/upload-banner`, // Endpoint para associar a imagem ao produto
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Bearer ${session?.token.token}`,
+                },
+              }
+            );
+
+            if (imageResponse.status === 200 || imageResponse.status === 201) {
+              toast({
+                variant: "success",
+                title: "Imagem enviada com sucesso!",
+              });
+            } else {
+              throw new Error("Falha ao enviar a imagem");
+            }
+          }
+
+          formik.resetForm();
+          setImagePreview(null);
+          setSelectedImage(null);
         } else {
-          console.error("Product registration failed:", response.data);
+          throw new Error("Falha ao cadastrar o produto");
         }
       } catch (error: any) {
         toast({
           variant: "destructive",
-          title: "Falha ao cadastrar produto",
+          title: "Erro",
           description: error.message,
         });
       } finally {
@@ -76,16 +119,16 @@ export default function ProductRegistrationForm() {
           <CardContent>
             <form onSubmit={formik.handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Título</Label>
+                <Label htmlFor="name">Título</Label>
                 <Input
-                  id="title"
+                  id="name"
                   placeholder="Digite o título do produto"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.title}
+                  value={formik.values.name}
                   error={
-                    formik.touched.title && formik.errors.title
-                      ? formik.errors.title
+                    formik.touched.name && formik.errors.name
+                      ? formik.errors.name
                       : undefined
                   }
                   required
