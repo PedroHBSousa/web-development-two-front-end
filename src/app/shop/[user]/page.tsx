@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/productCard";
-import { SearchComponent } from "@/components/searchComponent";
 import api from "@/lib/api";
 
 interface Product {
@@ -19,7 +18,17 @@ interface Props {
 export default function Shop({ params }: Props) {
   const unwrappedParams = React.use(params);
   const user = unwrappedParams?.user;
+  const [userName, setUserName] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
+
+  const fetchUserName = async () => {
+    try {
+      const response = await api.get(`/users/${user}`);
+      setUserName(response.data.fullName);
+    } catch (error) {
+      console.error("Erro ao buscar o nome do usuário:", error);
+    }
+  };
 
   const fetchProducts = async () => {
     const response = await api.get(`/shop/${user}`);
@@ -28,17 +37,17 @@ export default function Shop({ params }: Props) {
 
   useEffect(() => {
     fetchProducts();
+    fetchUserName();
   }, []);
 
   return (
     <div className="inter flex flex-col items-center justify-start">
-      <h1 className="text-4xl font-bold mt-4">Página de Produtos de {user}</h1>
+      <h1 className="text-4xl font-bold mt-4">
+        Página de Produtos de {userName}
+      </h1>
       <p className="text-lg text-gray-600 mb-10">
         Aqui você encontra os melhores produtos do mercado.
       </p>
-      <div className="w-full max-w-7xl px-12">
-        <SearchComponent />
-      </div>
       <div className="flex flex-wrap justify-center mb-10 gap-4 max-w-7xl">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />

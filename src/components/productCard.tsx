@@ -19,13 +19,27 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const formatPrice = (price: string) => {
+    const numericPrice = parseFloat(price);
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(numericPrice);
+  };
   const baseUrl = "http://localhost:3000";
 
   return (
     <Card className="w-full max-w-sm overflow-hidden">
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
-          <img src={`${baseUrl}/${product.banner}`} alt={product.name} />
+          <Image
+            src={`${baseUrl}/${product.banner}`}
+            alt={product.name}
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 768px) 100vw, 50vw" // Example of sizes for responsiveness
+            priority // Add this if the image is above the fold
+          />
         </div>
       </CardHeader>
       <CardContent className="p-4">
@@ -36,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="p-4 bg-gray-50 flex justify-between items-center">
         <span className="text-2xl font-bold text-green-600">
-          {product.price}
+          {formatPrice(product.price)}
         </span>
         <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
           Comprar
