@@ -11,6 +11,8 @@ import * as Yup from "yup";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import { useSession } from "next-auth/react";
+import NavBar from "@/components/ui/NavBar";
+import Footer from "@/components/ui/Footer";
 
 export default function ProductRegistrationForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -111,6 +113,7 @@ export default function ProductRegistrationForm() {
 
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <NavBar/>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Card className="inter w-96 max-w-2xl mx-auto">
           <CardHeader>
@@ -199,6 +202,7 @@ export default function ProductRegistrationForm() {
           </CardContent>
         </Card>
       </main>
+      <Footer/>
     </div>
   );
 }

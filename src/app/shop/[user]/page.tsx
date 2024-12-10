@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/productCard";
+import NavBar from "@/components/ui/NavBar";
+import Footer from "@/components/ui/Footer";
 import api from "@/lib/api";
 
 interface Product {
@@ -41,18 +43,24 @@ export default function Shop({ params }: Props) {
   }, []);
 
   return (
-    <div className="inter flex flex-col items-center justify-start">
-      <h1 className="text-4xl font-bold mt-4">
-        Página de Produtos de {userName}
-      </h1>
-      <p className="text-lg text-gray-600 mb-10">
-        Aqui você encontra os melhores produtos do mercado.
-      </p>
-      <div className="flex flex-wrap justify-center mb-10 gap-4 max-w-7xl">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <NavBar />
+
+      <main className="flex-grow mt-24">
+        <h1 className="text-4xl font-bold text-center">
+          Página de Produtos de {userName}
+        </h1>
+        <p className="text-lg text-gray-600 text-center mb-10">
+          Aqui você encontra os melhores produtos do mercado.
+        </p>
+        <div className="flex flex-wrap justify-center mb-48 gap-4 max-w-7xl mx-auto">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
