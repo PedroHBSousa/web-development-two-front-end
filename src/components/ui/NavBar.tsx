@@ -43,7 +43,7 @@ export default function NavBar() {
                         <span className="ml-2">Loja</span>
                     </Link>
 
-                    <Link href="/product/create" className="text-white flex items-center">
+                    <Link href="/product/list" className="text-white flex items-center">
                         <FaShoppingCart className="text-white text-2xl" />
                         <span className="ml-2">Meus Produtos</span>
                     </Link>
