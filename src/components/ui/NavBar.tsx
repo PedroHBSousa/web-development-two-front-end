@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { FaHome, FaSearch, FaShoppingCart, FaSignInAlt, FaUserPlus, FaRegHeart } from 'react-icons/fa';
+import { FaHome, FaSearch, FaShoppingCart, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import { IoStorefront } from "react-icons/io5";
+
 
 export default function NavBar() {
     return (
@@ -36,14 +38,14 @@ export default function NavBar() {
                         <span className="ml-2">Cadastro</span>
                     </Link>
 
-                    <Link href="/favorites" className="text-white flex items-center">
-                        <FaRegHeart className="text-white text-2xl" />
-                        <span className="ml-2">Favoritos</span>
+                    <Link href="/shop/user" className="text-white flex items-center">
+                        <IoStorefront className="text-white text-2xl" />
+                        <span className="ml-2">Loja</span>
                     </Link>
 
-                    <Link href="/shoppingCart" className="text-white flex items-center">
+                    <Link href="/product/create" className="text-white flex items-center">
                         <FaShoppingCart className="text-white text-2xl" />
-                        <span className="ml-2">Carrinho</span>
+                        <span className="ml-2">Meus Produtos</span>
                     </Link>
 
                 </div>

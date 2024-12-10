@@ -13,12 +13,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import NavBar from "@/components/ui/NavBar";
 import Footer from "@/components/ui/Footer";
 
 export default function Register() {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { toast } = useToast();
   const validationSchema = Yup.object({
     email: Yup.string().email("Email inválido").required("Campo obrigatório"),
     fullName: Yup.string().required("Campo obrigatório"),
@@ -37,17 +40,26 @@ export default function Register() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setIsSubmitting(true);
       const { passwordConfirmation, ...user } = values;
-
       try {
         const response = await api.post("/users", user);
         if (response.status === 200 || response.status === 201) {
-          console.log("Registration successful!");
+          toast({
+            variant: "success",
+            title: "Usuário cadastrado com sucesso!",
+          });
         } else {
           console.error("Registration failed:", response.data);
         }
-      } catch (error) {
-        console.error("Error during registration:", error);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Falha ao cadastrar usuário",
+          description: error.message,
+        });
+      } finally {
+        setIsSubmitting(false);
       }
     },
   });
@@ -142,7 +154,9 @@ export default function Register() {
               >
                 Voltar
               </Button>
-              <Button type="submit">Cadastrar</Button>
+              <Button className="w-full" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Enviando..." : "Cadastrar"}
+              </Button>
             </CardFooter>
           </Card>
         </form>
