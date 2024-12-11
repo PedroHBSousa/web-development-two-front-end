@@ -22,10 +22,11 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session, status } = useSession();
   const { toast } = useToast();
   const router = useRouter();
+  const baseUrl = "http://localhost:3000";
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -175,7 +176,7 @@ export default function ProductsPage() {
                     >
                       {product.banner ? (
                         <img
-                          src={product.banner}
+                          src={`${baseUrl}/${product.banner}`}
                           alt={product.name}
                           className="w-full h-48 object-cover rounded-md"
                         />
@@ -192,7 +193,10 @@ export default function ProductsPage() {
                         R$ {product.price.toFixed(2)}
                       </p>
                       <div className="flex gap-2 mt-4">
-                        <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => openEditModal(product)}>
+                        <Button
+                          className="bg-blue-500 hover:bg-blue-600"
+                          onClick={() => openEditModal(product)}
+                        >
                           Editar
                         </Button>
                         <Button
@@ -225,7 +229,10 @@ export default function ProductsPage() {
                   type="text"
                   value={editingProduct.name}
                   onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, name: e.target.value })
+                    setEditingProduct({
+                      ...editingProduct,
+                      name: e.target.value,
+                    })
                   }
                   className="w-full border rounded p-2"
                   required
@@ -258,15 +265,16 @@ export default function ProductsPage() {
                   }}
                   className="w-full border rounded p-2"
                 />
-                {editingProduct.banner && editingProduct.banner instanceof File && (
-                  <div className="mt-4">
-                    <img
-                      src={URL.createObjectURL(editingProduct.banner)}
-                      alt="Preview"
-                      className="w-full h-48 object-cover rounded-md"
-                    />
-                  </div>
-                )}
+                {editingProduct.banner &&
+                  editingProduct.banner instanceof File && (
+                    <div className="mt-4">
+                      <img
+                        src={URL.createObjectURL(editingProduct.banner)}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-md"
+                      />
+                    </div>
+                  )}
               </div>
               <div className="mb-4">
                 <label className="block font-medium mb-1">Preço</label>
@@ -292,7 +300,10 @@ export default function ProductsPage() {
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-green-500 hover:bg-green-600">
+                <Button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600"
+                >
                   Salvar
                 </Button>
               </div>

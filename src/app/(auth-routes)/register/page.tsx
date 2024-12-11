@@ -49,6 +49,7 @@ export default function Register() {
             variant: "success",
             title: "Usuário cadastrado com sucesso!",
           });
+          router.push("/login");
         } else {
           console.error("Registration failed:", response.data);
         }
@@ -68,7 +69,7 @@ export default function Register() {
 
   return (
     <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <NavBar/>
+      <NavBar />
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <form onSubmit={formik.handleSubmit}>
           <Card className="w-[350px]">
@@ -154,14 +155,14 @@ export default function Register() {
               >
                 Voltar
               </Button>
-              <Button className="w-full" type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Enviando..." : "Cadastrar"}
               </Button>
             </CardFooter>
           </Card>
         </form>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
