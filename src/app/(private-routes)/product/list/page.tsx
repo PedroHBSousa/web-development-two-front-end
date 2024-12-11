@@ -148,8 +148,8 @@ export default function ProductsPage() {
 
   return (
     <>
-      <NavBar />
-      <div className="p-8 flex flex-col gap-8 mt-24 mb-32">
+      <div className="min-h-[calc(100vh-357px)] p-8 flex flex-col gap-8 mt-24 mb-32">
+        <NavBar />
         <div className="flex justify-center gap-8">
           <div className="flex justify-start">
             <Button

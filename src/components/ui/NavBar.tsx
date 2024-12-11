@@ -8,7 +8,8 @@ import {
   FaSignInAlt,
   FaUserPlus,
 } from "react-icons/fa";
-import { IoStorefront } from "react-icons/io5";
+import { signOut } from "next-auth/react";
+import { IoStorefront, IoExitOutline } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 
 export default function NavBar() {
@@ -23,19 +24,6 @@ export default function NavBar() {
           </Link>
         </div>
 
-        {/* Centro */}
-        {/* <div className="flex items-center justify-center flex-1">
-          <div className="relative w-full max-w-md">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="w-full p-2 pl-10 pr-4 rounded-lg bg-gray-700 text-white placeholder-white focus:outline-none"
-            />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-xl" />
-          </div>
-        </div> */}
-
-        {/* Direito */}
         <div className="flex items-center space-x-6">
           {!session ? (
             <Link href="/login" className="text-white flex items-center">
@@ -62,6 +50,15 @@ export default function NavBar() {
               >
                 <FaShoppingCart className="text-white text-2xl" />
                 <span className="ml-2">Meus Produtos</span>
+              </Link>
+
+              <Link
+                href=""
+                className="text-white flex items-center"
+                onClick={() => signOut()}
+              >
+                <IoExitOutline className="text-white text-2xl" />
+                <span className="ml-2">Sair</span>
               </Link>
             </div>
           )}

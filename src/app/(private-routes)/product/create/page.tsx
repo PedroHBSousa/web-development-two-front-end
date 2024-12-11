@@ -112,10 +112,10 @@ export default function ProductRegistrationForm() {
   });
 
   return (
-    <div className="inter grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <NavBar/>
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Card className="inter w-96 max-w-2xl mx-auto">
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-800">
+      <NavBar />
+      <main className="mt-28 flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <Card className="inter w-96 max-w-2xl mx-auto mb-10">
           <CardHeader>
             <CardTitle>Cadastro de Produto</CardTitle>
           </CardHeader>
@@ -202,7 +202,7 @@ export default function ProductRegistrationForm() {
           </CardContent>
         </Card>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
